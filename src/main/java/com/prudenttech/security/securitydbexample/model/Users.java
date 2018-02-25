@@ -1,24 +1,41 @@
 package com.prudenttech.security.securitydbexample.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "user")
 public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     private int id;
+    @Column(name = "email")
     private String email;
+    @Column(name = "password")
     private String password;
+    @Column(name = "name")
     private String name;
+    @Column(name = "last_name")
     private String lastName;
-    private Set<Roles> roles;
+    @Column(name = "active")
+    private int active;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     public Users() {
+    }
+
+    public Users(Users users) {
+        this.active = users.getActive();
+        this.email = users.getEmail();
+        this.roles = users.getRoles();
+        this.name = users.getName();
+        this.lastName =users.getLastName();
+        this.id = users.getId();
+        this.password = users.getPassword();
     }
 
     public int getId() {
@@ -61,11 +78,19 @@ public class Users {
         this.lastName = lastName;
     }
 
-    public Set<Roles> getRoles() {
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
+
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Roles> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 }
